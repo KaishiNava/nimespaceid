@@ -1,0 +1,2 @@
+import Navbar from "@/components/Navbar"; import AnimeGrid from "@/components/AnimeGrid"; import {animeRequest,extractItems} from "@/lib/anime";
+export default async function Movies(){let items=[];try{items=extractItems(await animeRequest("/anime/movies?page=1&per_page=30"));}catch{}return <><Navbar/><main className="container py-12"><p className="eyebrow">FEATURE FILMS</p><h1 className="mt-2 mb-8 font-display text-4xl font-bold">Anime movies</h1><AnimeGrid items={items}/></main></>}

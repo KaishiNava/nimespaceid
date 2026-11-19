@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:#08090b; color:#f5f6f7; font-family:var(--font-jakarta),sans-serif; }
+a { color:inherit; text-decoration:none; }
+button,input { font:inherit; }
+.container { width:min(1240px,calc(100% - 40px)); margin-inline:auto; }
+.glass { background:rgba(18,20,24,.82); border:1px solid #272a30; backdrop-filter:blur(18px); }
+.card { background:#111317; border:1px solid #25282e; border-radius:16px; overflow:hidden; transition:transform .22s,border-color .22s; }
+.card:hover { transform:translateY(-4px); border-color:#777d87; }
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:9px; border-radius:10px; padding:11px 16px; background:#f4f4f5; color:#090a0c; font-weight:700; transition:.2s; }
+.btn:hover { background:#d7d9dd; transform:translateY(-1px); }
+.btn-outline { background:transparent; border:1px solid #343840; color:#f5f6f7; }
+.muted { color:#9298a3; }
+.eyebrow { color:#aeb4bf; font-size:11px; letter-spacing:.2em; text-transform:uppercase; font-weight:800; }
+.poster { aspect-ratio:2/3; background:linear-gradient(145deg,#242830,#111317); object-fit:cover; width:100%; }
+.rank-ring { border:1px solid rgba(255,255,255,.5); box-shadow:0 0 25px rgba(255,255,255,.08),inset 0 0 20px rgba(255,255,255,.05); }
+.role-normal { color:#8fc7ff; border-color:#316a9d; background:rgba(29,105,173,.13); }
+.role-premium { color:#fff; border-color:#b94747; background:linear-gradient(110deg,rgba(150,26,26,.3),rgba(255,255,255,.09),rgba(150,26,26,.3)); background-size:220% 100%; animation:premium 4s linear infinite; }
+.role-sepuh { color:#fff; border-color:#d9dce2; background:linear-gradient(110deg,#16181c,#555b65,#17191d); background-size:220% 100%; animation:shine 5s linear infinite; }
+@keyframes premium { to { background-position:220% 0; } }
+@keyframes shine { to { background-position:220% 0; } }
+@keyframes orbit { to { transform:rotate(360deg); } }
+.blackhole { position:relative; isolation:isolate; }
+.blackhole:before { content:""; position:absolute; inset:-9px; border:2px solid transparent; border-top-color:#fff; border-bottom-color:#777; border-radius:50%; animation:orbit 7s linear infinite; filter:drop-shadow(0 0 8px #aaa); z-index:-1; }
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
