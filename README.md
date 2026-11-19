@@ -17,6 +17,13 @@ Premium black-and-white anime discovery platform built with Next.js 15, TypeScri
 7. Configure Supabase Authentication site URL and email redirect URLs.
 8. Run `npm run dev`.
 
+## Browser video player
+- The Watch page supports authorized HTTPS MP4/WebM sources, HLS (`.m3u8`) through `hls.js`, and approved embed URLs.
+- Multiple approved sources are shown as selectable server buttons.
+- Playback remains disabled until the content owner confirms distribution rights and configures the exact approved hostnames. This is intentional; an API response alone is not proof of streaming permission.
+- Example server environment values (only use domains you own or are licensed to use): `STREAMING_RIGHTS_CONFIRMED=true` and `OMNIFY_ALLOWED_STREAM_HOSTS=media.example.com,cdn.example.com`.
+- After adding/changing dependencies, run `npm install`, then `npm run lint` and `npm run build`.
+
 ## Validation
 - `npm run lint` runs the strict TypeScript compiler (`tsc --noEmit`).
 - `npm run build` runs the Next.js production build.
