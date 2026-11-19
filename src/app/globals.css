@@ -119,3 +119,35 @@ button,input { font:inherit; }
  .studio-overlay .studio-panel{max-height:92vh;padding:17px}
 }
 @media(prefers-reduced-motion:reduce){.blackhole-badge:before,.level-card{animation:none!important}}
+
+
+/* v8.1 hotfix: border images may contain an opaque center. Punch a circular
+   opening so the real profile photo remains visible beneath the decoration. */
+.profile-avatar-wrap{
+  width:154px !important; height:154px !important;
+  max-width:46vw; max-height:46vw;
+  display:grid; place-items:center;
+}
+.profile-avatar-clip{
+  width:110px !important; height:110px !important;
+  position:relative; z-index:1; flex:0 0 auto;
+}
+.profile-avatar-clip img,.profile-avatar-clip .profile-avatar{
+  width:100% !important; height:100% !important;
+  object-fit:cover; display:block;
+}
+.avatar-border{
+  position:absolute !important; inset:0 !important;
+  width:100% !important; height:100% !important;
+  object-fit:contain !important; z-index:2 !important;
+  pointer-events:none;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%, transparent 0 32%, #000 34%);
+  mask-image:radial-gradient(circle at 50% 50%, transparent 0 32%, #000 34%);
+}
+.admin-status{margin:12px 0 16px;padding:11px 13px;border:1px solid #48566b;
+  border-radius:12px;background:#111925;color:#dce8ff;font-size:13px;
+  line-height:1.5;overflow-wrap:anywhere}
+@media(max-width:640px){
+  .profile-avatar-wrap{width:140px !important;height:140px !important;max-width:44vw;max-height:44vw}
+  .profile-avatar-clip{width:100px !important;height:100px !important}
+}

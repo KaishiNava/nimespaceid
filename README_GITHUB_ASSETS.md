@@ -35,3 +35,14 @@ Ganti placeholder dengan UUID milik akun sendiri. Jangan publikasikan UUID atau 
 5. Saat Edit Profile, avatar diunggah ke Supabase Storage. Banner dan border dipilih dari katalog GitHub; perubahan pilihan disimpan ke kolom `banner_asset_id` / `border_asset_id` di Supabase.
 
 Batas upload banner/border: 10 MB per file. Avatar: 8 MB.
+
+
+## Jika upload gagal
+Pesan upload sekarang ditampilkan langsung di dalam modal Admin Studio. Periksa teks error tersebut:
+- `GITHUB_TOKEN belum dipasang`: tambahkan Environment Variable bernama persis `GITHUB_TOKEN` di Vercel untuk Production (dan Preview jika dipakai), lalu redeploy.
+- `401`: token tidak valid/kedaluwarsa.
+- `403`: token tidak diberi izin **Contents: Read and write**, atau akses repository belum dipilih pada fine-grained token.
+- `404`: owner, nama repository, atau branch salah; pastikan `KaishiNava`, `nime-space-assets`, dan `main`.
+- `Akses khusus admin/owner`: kolom `profiles.role` akun yang login harus `admin` atau `owner`; label tampilan saja tidak cukup.
+
+Token hanya disimpan di Vercel sebagai variable server-side. Jangan pernah mengirim token lewat chat atau memasukkannya ke `NEXT_PUBLIC_...`.
