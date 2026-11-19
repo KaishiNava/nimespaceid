@@ -24,7 +24,7 @@ export default async function AnimeDetail({ params }: { params: Promise<{ id: st
   const genres = Array.isArray(anime.genres) ? anime.genres.filter((g): g is string => typeof g === "string") : [];
   const episodeData = Array.isArray(anime.episodes) ? anime.episodes : Array.isArray(anime.episode_list) ? anime.episode_list : [];
   const episodeCount = typeof anime.episodes === "number" || typeof anime.episodes === "string" ? anime.episodes : episodeData.length;
-  const metadata = [
+  const metadata: [string, unknown][] = [
     ["Status", anime.status], ["Tipe", anime.type], ["Studio", anime.studio],
     ["Rilis", anime.aired || anime.release_date], ["Episode", episodeCount || anime.total_episodes],
     ["Rating", anime.rating || anime.score],
