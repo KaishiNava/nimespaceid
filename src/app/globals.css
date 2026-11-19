@@ -151,3 +151,82 @@ button,input { font:inherit; }
   .profile-avatar-wrap{width:140px !important;height:140px !important;max-width:44vw;max-height:44vw}
   .profile-avatar-clip{width:100px !important;height:100px !important}
 }
+
+/* v8.3: tightly fit avatar inside the selected decorative border. */
+.profile-avatar-wrap{
+  width:154px !important;
+  height:154px !important;
+  max-width:46vw !important;
+  max-height:46vw !important;
+  display:grid !important;
+  place-items:center !important;
+  overflow:visible !important;
+}
+.profile-avatar-clip{
+  width:78% !important;
+  height:78% !important;
+  flex:0 0 78% !important;
+  border:0 !important;
+  border-radius:50% !important;
+  overflow:hidden !important;
+  position:relative !important;
+  z-index:1 !important;
+  background:#050608 !important;
+  box-shadow:0 0 0 1px #111317;
+}
+.profile-avatar-clip img,
+.profile-avatar-clip .profile-avatar{
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+  object-fit:cover !important;
+  border:0 !important;
+  border-radius:50% !important;
+}
+.avatar-border{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:fill !important;
+  z-index:2 !important;
+  pointer-events:none !important;
+  /* Keep the border's center transparent; the profile photo fills the opening. */
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0 38%,#000 40%);
+  mask-image:radial-gradient(circle at 50% 50%,transparent 0 38%,#000 40%);
+}
+.profile-badges .unlimited-tag{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  vertical-align:middle !important;
+  line-height:1 !important;
+}
+.unlimited-tag strong{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  line-height:.8 !important;
+  height:1em !important;
+  transform:translateY(-1.5px) !important;
+  font-size:27px !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+@media(max-width:640px){
+  .profile-avatar-wrap{
+    width:140px !important;
+    height:140px !important;
+    max-width:44vw !important;
+    max-height:44vw !important;
+  }
+  .profile-avatar-clip{
+    width:78% !important;
+    height:78% !important;
+    flex-basis:78% !important;
+  }
+  .unlimited-tag strong{
+    font-size:24px !important;
+    transform:translateY(-1px) !important;
+  }
+}
