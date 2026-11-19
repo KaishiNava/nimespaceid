@@ -16,17 +16,48 @@ create table if not exists public.profiles (
   updated_at timestamptz not null default now()
 );
 alter table public.profiles enable row level security;
-create policy "Profiles are publicly readable" on public.profiles for select using (true);
-create policy "Users can update own profile basics" on public.profiles for update using (auth.uid() = id) with check (auth.uid() = id);
-create policy "Users can insert own profile" on public.profiles for insert with check (auth.uid() = id);
+drop policy if exists "Profiles are publicly readable" on public.profiles;
+drop policy if exists "Users can update own profile basics" on public.profiles;
+drop policy if exists "Users can insert own profile" on public.profiles;
+
+create policy "Profiles are publicly readable"
+  on public.profiles for select
+  using (true);
+
+create policy "Users can update own profile basics"
+  on public.profiles for update
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
+
+-- Profile creation is handled by the trusted auth.users trigger below.
+-- Users may edit only cosmetic/basic columns, never role, EXP, level, or public_id.
+revoke insert, update on public.profiles from anon, authenticated;
+grant update (username, display_name, bio, avatar_url, banner_asset_id, border_asset_id)
+  on public.profiles to authenticated;
 
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path=public as $$
-declare base_name text;
+declare
+  base_name text;
+  candidate text;
+  suffix integer := 0;
 begin
-  base_name := coalesce(new.raw_user_meta_data->>'username', split_part(new.email,'@',1));
+  base_name := lower(regexp_replace(
+    coalesce(new.raw_user_meta_data->>'username', split_part(new.email,'@',1)),
+    '[^a-zA-Z0-9_]', '', 'g'
+  ));
+  if length(base_name) < 3 then
+    base_name := 'user' || substr(replace(new.id::text, '-', ''), 1, 8);
+  end if;
+  candidate := left(base_name, 20);
+
+  while exists (select 1 from public.profiles p where p.username = candidate and p.id <> new.id) loop
+    suffix := suffix + 1;
+    candidate := left(base_name, 20 - length(suffix::text)) || suffix::text;
+  end loop;
+
   insert into public.profiles(id, username, display_name)
-  values(new.id, base_name, coalesce(new.raw_user_meta_data->>'display_name',base_name))
+  values(new.id, candidate, coalesce(new.raw_user_meta_data->>'display_name', candidate))
   on conflict (id) do nothing;
   return new;
 end; $$;

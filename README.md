@@ -1,39 +1,43 @@
 # NIME SPACE
 
-Premium black-and-white anime discovery platform starter built with Next.js 15, TypeScript, Tailwind CSS, Supabase Auth and OmnifyAnime API.
+Premium black-and-white anime discovery platform built with Next.js 15, TypeScript, Tailwind CSS, Supabase Auth, and the OmnifyAnime API.
 
 ## Requirements
 - Node.js 20+
-- Supabase project
-- Private OmnifyAnime API key supplied by the API provider
+- A Supabase project
+- A private, valid OmnifyAnime API key from its provider
 
-## Setup
-1. Extract the ZIP and open the folder.
+## Local setup
+1. Extract the ZIP and open the project folder.
 2. Run `npm install`.
 3. Copy `.env.example` to `.env.local`.
-4. Fill Supabase URL and anon key.
-5. Fill `OMNIFY_API_KEY` with your own valid private key. Do not expose it in `NEXT_PUBLIC_*`.
-6. In Supabase SQL Editor, run `supabase/schema.sql`.
-7. In Supabase Authentication settings, configure your site URL and email redirect URLs.
+4. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+5. Set `OMNIFY_API_BASE` and `OMNIFY_API_KEY`. The API key is server-only; never use a `NEXT_PUBLIC_` prefix.
+6. Run `supabase/schema.sql` in the Supabase SQL Editor.
+7. Configure Supabase Authentication site URL and email redirect URLs.
 8. Run `npm run dev`.
 
-## Deploy
-Push to GitHub, import the repository into Vercel, and add the same environment variables in Vercel Project Settings.
+## Validation
+- `npm run lint` runs the strict TypeScript compiler (`tsc --noEmit`).
+- `npm run build` runs the Next.js production build.
+
+## Deploy to Vercel
+Push the project to GitHub, import the repository in Vercel, and add the same environment variables in Project Settings → Environment Variables. Redeploy after changing environment variables.
 
 ## Included
-- Responsive black/white brand and typography
-- Main navigation (desktop and mobile)
-- Home, Explore, Schedule, Movies, Donghua, anime detail
-- Supabase email/password register and login
-- Profile starter with member ID, role label, level and tier display
-- Server-side OmnifyAnime proxy route at `/api/anime/...`
-- Supabase schema for profiles, cosmetics, bookmarks and history
+- Responsive dark monochrome NIME SPACE interface
+- Desktop navigation and mobile navigation
+- Home, Explore/search, Schedule, Movies, Donghua, and Anime Detail pages
+- Supabase email/password registration and login
+- Profile page with member ID, role label, level, and rank tier
+- Server-side OmnifyAnime API helper and proxy route
+- Supabase schema for profiles, borders, banners, bookmarks, and watch history
 
-## Important implementation notes
-- The API homepage reports OmnifyAnime v1.3.0 as Development / unfinished. Response formats may vary; verify each endpoint against live responses before relying on it.
-- The public documentation currently displays a temporary API key. This project intentionally does not copy that key. Obtain/rotate a private key from the provider and put it in `OMNIFY_API_KEY`.
-- The anime API supplies metadata. This starter does not scrape or embed unauthorized video streams. Add playback only for video sources you have permission to distribute.
-- Rank thresholds beyond A are initial proposal: S 3001–5000, SS 5001–10000, SSS 10001–20000, SSS+ 20001–35000, SSS++ 35001–50000, SSS+++ 50001+. Admin/Owner Black Hole tier is represented as a visual profile state, not an EXP exploit.
-- Admin/Owner privileges must be assigned securely by trusted server-side administration. Never allow users to update their own role, level, total_exp, or public_id. Tighten the profile update RLS policy before production so users can only update editable columns.
-- Border/banner GitHub upload management and owner dashboard are planned next. Asset metadata tables are included; upload route is not enabled in this starter.
-- The level EXP curve and exact rank-up EXP thresholds are intentionally not invented yet; only level-to-tier ranges are shown.
+## Important notes
+- The OmnifyAnime API has been described by its provider as a development/unfinished API. Endpoint response shapes and query parameters may change. Verify endpoints with the provider before relying on them in production.
+- This project does not include a provider key. Obtain a private key from the API provider and store it only in server environment variables.
+- API metadata does not grant permission to redistribute video. Playback must only use streams you are authorized to distribute.
+- The profile trigger creates member profiles and sequential public IDs. Users can update only basic profile/cosmetic columns; role, level, total EXP, and public ID are not user-editable through the normal client role.
+- Assign admin/owner roles only through trusted Supabase administration.
+- Border/banner asset upload dashboard and EXP award/rank progression are not implemented in this starter. The schema includes asset and ownership tables for the next development phase.
+- The rank thresholds are display tiers only. An EXP curve and rank-up rewards have not been configured.
