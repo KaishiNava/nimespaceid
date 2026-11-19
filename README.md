@@ -1,50 +1,43 @@
-# NIME SPACE
+# Nime Space
 
-Premium black-and-white anime discovery platform built with Next.js 15, TypeScript, Tailwind CSS, Supabase Auth, and the OmnifyAnime API.
+## Profile Studio update
 
-## Requirements
-- Node.js 20+
-- A Supabase project
-- A private, valid OmnifyAnime API key from its provider
+Fitur profil:
+- Avatar bulat dan berada di tengah.
+- Edit nama, bio, foto profil, banner, dan border avatar.
+- Mendukung gambar PNG, JPG, WEBP, GIF (maksimum 8 MB per file).
+- Level ditampilkan sebagai angka, emblem rank, dan animasi khusus BLACK HOLE.
+- Rank visual: COMMON, UNCOMMON, RARE, EPIC, LEGENDARY, MYTHIC, BLACK HOLE.
+- Admin Studio untuk menambahkan banner/border dari file upload atau URL, mengatur rarity dan akses role, serta mengubah role member.
+- Admin dapat mengambil daftar file dari folder `banner/` dan `border/` pada repository https://github.com/KaishiNava/nime-space-assets.
 
-## Local setup
-1. Extract the ZIP and open the project folder.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env.local`.
-4. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-5. Set `OMNIFY_API_BASE` and `OMNIFY_API_KEY`. The API key is server-only; never use a `NEXT_PUBLIC_` prefix.
-6. Run `supabase/schema.sql` in the Supabase SQL Editor.
-7. Configure Supabase Authentication site URL and email redirect URLs.
-8. Run `npm run dev`.
+## Wajib dilakukan setelah update
 
-## Browser video player
-- The Watch page supports authorized HTTPS MP4/WebM sources, HLS (`.m3u8`) through `hls.js`, and approved embed URLs.
-- Multiple approved sources are shown as selectable server buttons.
-- Playback remains disabled until the content owner confirms distribution rights and configures the exact approved hostnames. This is intentional; an API response alone is not proof of streaming permission.
-- Example server environment values (only use domains you own or are licensed to use): `STREAMING_RIGHTS_CONFIRMED=true` and `OMNIFY_ALLOWED_STREAM_HOSTS=media.example.com,cdn.example.com`.
-- After adding/changing dependencies, run `npm install`, then `npm run lint` and `npm run build`.
+1. Buka Supabase Dashboard → SQL Editor.
+2. Jalankan seluruh `supabase/schema.sql` (aman untuk schema awal dan menambahkan kolom/tabel yang belum ada).
+3. Pastikan akun owner/admin sudah diberi role melalui SQL tepercaya. Contoh:
 
-## Validation
-- `npm run lint` runs the strict TypeScript compiler (`tsc --noEmit`).
-- `npm run build` runs the Next.js production build.
+```sql
+update public.profiles
+set role = 'owner', role_label = 'Wibu Sepuh'
+where username = 'USERNAME_OWNER';
+```
 
-## Deploy to Vercel
-Push the project to GitHub, import the repository in Vercel, and add the same environment variables in Project Settings → Environment Variables. Redeploy after changing environment variables.
+4. Deploy ulang aplikasi.
+5. Masuk ke `/profile`, lalu gunakan **Edit Profile**. Akun admin/owner akan melihat **Admin Studio**.
 
-## Included
-- Responsive dark monochrome NIME SPACE interface
-- Desktop navigation and mobile navigation
-- Home, Explore/search, weekly Schedule, Movies, Donghua, Anime Detail, and gated Watch Player pages
-- Supabase email/password registration and login
-- Profile page with member ID, role label, level, and rank tier
-- Server-side OmnifyAnime API helper and proxy route
-- Supabase schema for profiles, borders, banners, bookmarks, and watch history
+## Storage
 
-## Important notes
-- The OmnifyAnime API has been described by its provider as a development/unfinished API. Endpoint response shapes and query parameters may change. Verify endpoints with the provider before relying on them in production.
-- This project does not include a provider key. Obtain a private key from the API provider and store it only in server environment variables.
-- API metadata does not grant permission to redistribute video. The Watch Player is disabled by default. Only enable `STREAMING_RIGHTS_CONFIRMED=true` and set `OMNIFY_ALLOWED_STREAM_HOSTS` after the provider confirms distribution rights for those exact video hosts. The player will reject hosts outside that allowlist.
-- The profile trigger creates member profiles and sequential public IDs. Users can update only basic profile/cosmetic columns; role, level, total EXP, and public ID are not user-editable through the normal client role.
-- Assign admin/owner roles only through trusted Supabase administration.
-- Border/banner asset upload dashboard and EXP award/rank progression are not implemented in this starter. The schema includes asset and ownership tables for the next development phase.
-- The rank thresholds are display tiers only. An EXP curve and rank-up rewards have not been configured.
+SQL membuat bucket publik `profile-assets` dengan batas file 8 MB dan tipe gambar yang diizinkan. Kebijakan upload hanya mengizinkan user mengunggah ke folder UUID miliknya sendiri. Asset profil yang sudah diupload ditampilkan melalui public URL.
+
+## Asset repository
+
+File dalam folder `banner/` dan `border/` pada repository publik akan ditemukan otomatis melalui GitHub API. Tambahkan asset melalui Admin Studio untuk memasukkannya ke katalog Supabase. File GIF akan tetap bergerak ketika digunakan sebagai banner/border.
+
+## Security notes
+
+- Role dan label role tidak bisa diubah dari form profil biasa.
+- Perubahan role dilakukan lewat RPC `admin_set_member_role` yang memeriksa role admin/owner di database.
+- Hanya owner yang dapat memberikan role owner.
+- Upload dibatasi pada folder user yang sedang login.
+- Untuk asset katalog, hanya admin/owner yang dapat insert/update/delete.
