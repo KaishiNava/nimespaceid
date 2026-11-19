@@ -24,11 +24,14 @@ export default async function AnimeDetail({ params }: { params: Promise<{ id: st
   const genres = Array.isArray(anime.genres) ? anime.genres.filter((g): g is string => typeof g === "string") : [];
   const episodeData = Array.isArray(anime.episodes) ? anime.episodes : Array.isArray(anime.episode_list) ? anime.episode_list : [];
   const episodeCount = typeof anime.episodes === "number" || typeof anime.episodes === "string" ? anime.episodes : episodeData.length;
-  const metadata: [string, unknown][] = [
+  const metadata = ([
     ["Status", anime.status], ["Tipe", anime.type], ["Studio", anime.studio],
     ["Rilis", anime.aired || anime.release_date], ["Episode", episodeCount || anime.total_episodes],
     ["Rating", anime.rating || anime.score],
-  ].filter((entry) => entry[1] !== undefined && entry[1] !== null && entry[1] !== "");
+  ] as [string, unknown][]).filter(
+    (entry): entry is [string, unknown] =>
+      entry[1] !== undefined && entry[1] !== null && entry[1] !== ""
+  );
 
   return <><Navbar /><main className="container py-8 md:py-14">
     <div className="grid gap-7 md:grid-cols-[260px_minmax(0,1fr)] md:gap-10">
