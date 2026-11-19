@@ -29,12 +29,13 @@ Ganti placeholder dengan UUID milik akun sendiri. Jangan publikasikan UUID atau 
 
 ## Cara kerja
 1. Admin/owner memilih Banner atau Border, mengisi nama, rarity, akses role, dan memilih file PNG/JPG/WEBP/GIF.
-2. Browser mengirim file ke `/api/admin/github-assets` menggunakan sesi login.
-3. Route server memverifikasi sesi dan role admin/owner, lalu mengunggah file ke GitHub menggunakan `GITHUB_TOKEN`.
+2. Browser mengunggah file ke bucket Supabase `profile-assets` pada folder sementara milik user.
+3. Browser mengirim path file sementara (bukan isi file) ke `/api/admin/github-assets`. Route memverifikasi sesi dan role admin/owner, mengambil file dari Storage, lalu mengunggahnya ke GitHub menggunakan `GITHUB_TOKEN`.
+4. File sementara dibersihkan setelah proses selesai; pola ini menghindari batas payload masuk 4.5 MB pada Vercel Functions.
 4. URL GitHub dan metadata aset dicatat di Supabase.
 5. Saat Edit Profile, avatar diunggah ke Supabase Storage. Banner dan border dipilih dari katalog GitHub; perubahan pilihan disimpan ke kolom `banner_asset_id` / `border_asset_id` di Supabase.
 
-Batas upload banner/border: 10 MB per file. Avatar: 8 MB.
+Batas upload banner/border: 10 MB per file. Avatar: 8 MB. Jalankan ulang `supabase/profile_studio_fix.sql` setelah update untuk menaikkan batas bucket `profile-assets` menjadi 10 MB.
 
 
 ## Jika upload gagal

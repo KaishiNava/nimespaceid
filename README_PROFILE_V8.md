@@ -36,3 +36,9 @@ Versi ini akan menampilkan pesan asli dari GitHub atau Supabase. Arti umum:
 - Pesan `metadata Supabase gagal`: file sudah berhasil masuk GitHub, tetapi insert katalog ditolak Supabase; periksa SQL/RLS tabel `banner_assets` atau `border_assets`.
 
 Ukuran file maksimum 10 MB. Format PNG, JPG, WEBP, dan GIF didukung.
+
+
+## v8.2 hotfix
+- Avatar halaman profil sekarang memakai foto OAuth dari `user_metadata.avatar_url` / `picture` jika `profiles.avatar_url` belum diisi.
+- Upload banner/border memakai staging Supabase Storage lalu route server meneruskan file ke GitHub; ini menghindari HTTP 413 dari batas body Vercel Functions.
+- Jalankan ulang `supabase/profile_studio_fix.sql` untuk menaikkan batas bucket staging menjadi 10 MB.
