@@ -12,5 +12,5 @@ export default async function Profile(){
   supabase.from("banner_assets").select("*").eq("active",true).order("created_at",{ascending:false}),
   supabase.from("border_assets").select("*").eq("active",true).order("created_at",{ascending:false})
  ]);
- return <><Navbar/><main className="container py-10"><p className="eyebrow mb-5">YOUR SPACE</p><ProfileStudio profile={profile} banners={banners||[]} borders={borders||[]} userEmail={user.email||""}/></main></>;
+ return <><Navbar/><main className="container py-10"><p className="eyebrow mb-5">YOUR SPACE</p><ProfileStudio profile={profile} banners={banners||[]} borders={borders||[]}/></main></>;
 }
