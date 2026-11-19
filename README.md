@@ -27,7 +27,7 @@ Push the project to GitHub, import the repository in Vercel, and add the same en
 ## Included
 - Responsive dark monochrome NIME SPACE interface
 - Desktop navigation and mobile navigation
-- Home, Explore/search, Schedule, Movies, Donghua, and Anime Detail pages
+- Home, Explore/search, weekly Schedule, Movies, Donghua, Anime Detail, and gated Watch Player pages
 - Supabase email/password registration and login
 - Profile page with member ID, role label, level, and rank tier
 - Server-side OmnifyAnime API helper and proxy route
@@ -36,7 +36,7 @@ Push the project to GitHub, import the repository in Vercel, and add the same en
 ## Important notes
 - The OmnifyAnime API has been described by its provider as a development/unfinished API. Endpoint response shapes and query parameters may change. Verify endpoints with the provider before relying on them in production.
 - This project does not include a provider key. Obtain a private key from the API provider and store it only in server environment variables.
-- API metadata does not grant permission to redistribute video. Playback must only use streams you are authorized to distribute.
+- API metadata does not grant permission to redistribute video. The Watch Player is disabled by default. Only enable `STREAMING_RIGHTS_CONFIRMED=true` and set `OMNIFY_ALLOWED_STREAM_HOSTS` after the provider confirms distribution rights for those exact video hosts. The player will reject hosts outside that allowlist.
 - The profile trigger creates member profiles and sequential public IDs. Users can update only basic profile/cosmetic columns; role, level, total EXP, and public ID are not user-editable through the normal client role.
 - Assign admin/owner roles only through trusted Supabase administration.
 - Border/banner asset upload dashboard and EXP award/rank progression are not implemented in this starter. The schema includes asset and ownership tables for the next development phase.
