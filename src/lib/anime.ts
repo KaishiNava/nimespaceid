@@ -22,7 +22,7 @@ type ApiPayload = {
   [key: string]: unknown;
 };
 
-const BASE = (process.env.OMNIFY_API_BASE || "https://anime.omnifylabs.sbs").replace(/\\/$/, "");
+const BASE = (process.env.OMNIFY_API_BASE || "https://anime.omnifylabs.sbs").replace(/\/$/, "");
 
 export async function animeRequest(path: string): Promise<unknown> {
   const key = process.env.OMNIFY_API_KEY;

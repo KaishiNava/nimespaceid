@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { path } = await params;
   const key = process.env.OMNIFY_API_KEY;
-  const base = (process.env.OMNIFY_API_BASE || "https://anime.omnifylabs.sbs").replace(/\\/$/, "");
+  const base = (process.env.OMNIFY_API_BASE || "https://anime.omnifylabs.sbs").replace(/\/$/, "");
 
   if (!key) {
     return NextResponse.json({ error: "API key belum dikonfigurasi di server." }, { status: 503 });
