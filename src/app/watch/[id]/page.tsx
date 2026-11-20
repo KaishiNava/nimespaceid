@@ -19,7 +19,10 @@ function collectStreams(value: unknown, result: StreamSource[] = [], depth = 0):
   }
   const record = asRecord(value);
   if (!record) return result;
-  const label = String(record.quality || record.label || record.server || record.name || record.resolution || `Sumber ${result.length + 1}`);
+  const server = String(record.server || record.name || "");
+  const quality = String(record.quality || record.resolution || record.label || "");
+  const format = String(record.format || record.type || "").toUpperCase();
+  const label = [server, quality, format].filter(Boolean).join(" · ") || `Sumber ${result.length + 1}`;
   for (const key of URL_KEYS) {
     const candidate = record[key];
     if (typeof candidate !== "string") continue;

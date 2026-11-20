@@ -62,3 +62,9 @@ Catatan teknis:
 - URL embed harus mengizinkan iframe dari domain website Anda.
 - Jangan menaruh `OMNIFY_API_KEY` di variabel `NEXT_PUBLIC_*`, kode client, atau repository.
 - Endpoint beranda API saat ini menampilkan informasi API key secara publik. Minta penyedia untuk mencabut/memutar ulang key tersebut dan gunakan key baru sebagai secret server-side sebelum deploy.
+
+### Format respons stream OmnifyAnime 1.3
+
+Endpoint `/anime/episode?id=...` dapat mengembalikan `data.streams[]` dengan properti `server`, `quality`, `stream_url`, dan `format`. Aplikasi membaca `stream_url` dan menentukan pemutar dari `format` (`mp4` atau `hls`). Jika server utama gagal, player otomatis mencoba sumber berikutnya; pengguna juga dapat memilih server secara manual. URL `/proxy/stream/...` merupakan URL media bertoken dari penyedia, bukan endpoint API episode.
+
+Untuk HLS melalui hls.js, penyedia harus mengizinkan CORS pada playlist, segmen, dan key (jika ada). Mengubah konfigurasi CORS di aplikasi Nime Space tidak dapat mengubah header yang dikirim server media.
