@@ -24,9 +24,10 @@ export async function animeRequest(path: string): Promise<unknown> {
   const key = process.env.OMNIFY_API_KEY;
   if (!key) throw new Error("OMNIFY_API_KEY belum diatur.");
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const isEpisodeStream = normalizedPath.startsWith("/anime/episode");
   const response = await fetch(`${BASE}${normalizedPath}`, {
     headers: { "X-API-Key": key, Accept: "application/json" },
-    next: { revalidate: 180 },
+    ...(isEpisodeStream ? { cache: "no-store" as const } : { next: { revalidate: 180 } }),
   });
   if (!response.ok) throw new Error(`OmnifyAnime API error: ${response.status}`);
   return response.json() as Promise<unknown>;

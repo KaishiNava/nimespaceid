@@ -21,9 +21,10 @@ export async function GET(
     const url = new URL(`${base}/${path.map(encodeURIComponent).join("/")}`);
     request.nextUrl.searchParams.forEach((value, name) => url.searchParams.set(name, value));
 
+    const isEpisodeStream = path.join("/") === "anime/episode";
     const upstream = await fetch(url, {
       headers: { "X-API-Key": key, Accept: "application/json" },
-      next: { revalidate: 180 },
+      ...(isEpisodeStream ? { cache: "no-store" as const } : { next: { revalidate: 180 } }),
     });
     const body = await upstream.text();
     let payload: unknown;

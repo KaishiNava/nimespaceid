@@ -41,3 +41,23 @@ File dalam folder `banner/` dan `border/` pada repository publik akan ditemukan 
 - Hanya owner yang dapat memberikan role owner.
 - Upload dibatasi pada folder user yang sedang login.
 - Untuk asset katalog, hanya admin/owner yang dapat insert/update/delete.
+
+
+## Konfigurasi pemutar streaming
+
+Halaman `/watch/[id]` mengambil URL episode terbaru tanpa cache agar URL stream yang memiliki masa berlaku tidak tersimpan selama 180 detik. Pemutar mendukung MP4/WebM langsung, HLS (`.m3u8`) melalui HLS.js atau native HLS browser, dan URL embed.
+
+Untuk mengaktifkan sumber video yang memang Anda miliki atau telah mendapat izin distribusinya, atur Environment Variables di hosting:
+
+- `STREAMING_RIGHTS_CONFIRMED=true`
+- `OMNIFY_ALLOWED_STREAM_HOSTS=hostname-media-resmi.example,cdn-media-resmi.example`
+
+Isi daftar host dengan hostname yang benar-benar muncul pada URL sumber video dan telah disetujui pemilik konten. Jangan isi dengan domain API kecuali video memang disajikan dari domain tersebut. Jangan gunakan wildcard atau menghapus pemeriksaan host. Setelah mengubah Environment Variables, lakukan redeploy.
+
+Jika player masih menampilkan pesan sumber belum bisa diputar, buka **Diagnostik respons API** pada halaman watch. Bagian `detectedHosts` menampilkan hostname yang ditemukan tanpa membocorkan URL bertoken. Pastikan host yang terdeteksi sudah diverifikasi dan ditambahkan ke `OMNIFY_ALLOWED_STREAM_HOSTS`. Jika `detectedHosts` kosong, periksa bentuk respons endpoint episode dan `episodeId` yang dikirim dari daftar episode.
+
+Catatan teknis:
+- HLS lintas-domain membutuhkan CORS yang benar dari server media; player browser tidak dapat memperbaiki CORS yang ditolak server.
+- URL embed harus mengizinkan iframe dari domain website Anda.
+- Jangan menaruh `OMNIFY_API_KEY` di variabel `NEXT_PUBLIC_*`, kode client, atau repository.
+- Endpoint beranda API saat ini menampilkan informasi API key secara publik. Minta penyedia untuk mencabut/memutar ulang key tersebut dan gunakan key baru sebagai secret server-side sebelum deploy.
