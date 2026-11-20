@@ -24,12 +24,15 @@ export default function StreamPlayer({ sources, title }: { sources: Source[]; ti
           const Hls = (await import("hls.js")).default;
           if (cancelled) return;
           if (Hls.isSupported()) {
-            const instance = new Hls({ enableWorker: true, maxBufferLength: 30 });
+            const instance = new Hls({ enableWorker: true, maxBufferLength: 30, lowLatencyMode: false, backBufferLength: 30 });
             hls = instance;
             instance.loadSource(source.url);
             instance.attachMedia(video);
             instance.on(Hls.Events.ERROR, (_event, data) => {
-              if (data.fatal) setError("Video tidak dapat dimuat dari sumber ini. Coba sumber lain.");
+              if (data.fatal) {
+                const detail = data.details ? ` (${String(data.details)})` : "";
+                setError(`HLS gagal dimuat${detail}. Periksa CORS playlist dan segmen pada server penyedia.`);
+              }
             });
           } else setError("Browser ini tidak mendukung format HLS.");
         } catch {
@@ -46,7 +49,7 @@ export default function StreamPlayer({ sources, title }: { sources: Source[]; ti
     {sources.length > 1 && <div className="flex flex-wrap gap-2 border-b border-white/10 bg-panel p-3">
       {sources.map((item, index) => <button key={`${item.url}-${index}`} onClick={() => setSelected(index)} className={`rounded-lg px-3 py-2 text-xs ${selected === index ? "bg-white text-black" : "border border-line text-gray-300"}`}>{item.label}</button>)}
     </div>}
-    {source.type === "embed" ? <iframe key={source.url} src={source.url} title={title} className="aspect-video w-full" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation allow-forms" /> : <video ref={videoRef} controls playsInline preload="metadata" crossOrigin="anonymous" className="aspect-video w-full" onError={() => setError("Video gagal diputar. Periksa URL, format, izin embed, dan dukungan CORS dari penyedia.")} />}
+    {source.type === "embed" ? <iframe key={source.url} src={source.url} title={title} className="aspect-video w-full" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation allow-forms" /> : <video ref={videoRef} controls playsInline preload="metadata" className="aspect-video w-full" onError={() => setError("Video gagal diputar. Periksa URL, format, izin embed, dan dukungan CORS dari penyedia.")} />}
     {error && <p role="status" className="bg-panel px-4 py-3 text-sm text-amber-300">{error}</p>}
   </section>;
 }
