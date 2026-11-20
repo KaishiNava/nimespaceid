@@ -64,7 +64,23 @@ export default async function WatchPage({ params, searchParams }: {
   catch (e) { error = e instanceof Error ? e.message : "Episode tidak tersedia."; }
 
   const allSources = collectStreams(unwrapData(payload));
-  const sources = allSources.filter((source) => isAllowed(source.url));
+  const sources = allSources
+    .filter((source) => isAllowed(source.url))
+    .map((source) => {
+      // MP4 stream URLs from Omnify use opaque /proxy/stream/<token> paths.
+      // Relay them through our same-origin route so Range and media headers survive
+      // and browser CORS restrictions do not block an otherwise authorized source.
+      if (source.type === "video") {
+        try {
+          const parsed = new URL(source.url);
+          const match = parsed.pathname.match(/^\/proxy\/stream\/([A-Za-z0-9_-]{20,2048})$/);
+          if (match && parsed.hostname.toLowerCase() === new URL(process.env.OMNIFY_API_BASE || "https://anime.omnifylabs.sbs").hostname.toLowerCase()) {
+            return { ...source, url: `/api/stream/${match[1]}` };
+          }
+        } catch { /* Keep the original URL if it is not a recognized Omnify stream URL. */ }
+      }
+      return source;
+    });
   const blockedCount = allSources.length - sources.length;
   const detectedHosts = [...new Set(allSources.map(({ url }) => {
     try { return new URL(url).hostname; } catch { return ""; }

@@ -68,3 +68,8 @@ Catatan teknis:
 Endpoint `/anime/episode?id=...` dapat mengembalikan `data.streams[]` dengan properti `server`, `quality`, `stream_url`, dan `format`. Aplikasi membaca `stream_url` dan menentukan pemutar dari `format` (`mp4` atau `hls`). Jika server utama gagal, player otomatis mencoba sumber berikutnya; pengguna juga dapat memilih server secara manual. URL `/proxy/stream/...` merupakan URL media bertoken dari penyedia, bukan endpoint API episode.
 
 Untuk HLS melalui hls.js, penyedia harus mengizinkan CORS pada playlist, segmen, dan key (jika ada). Mengubah konfigurasi CORS di aplikasi Nime Space tidak dapat mengubah header yang dikirim server media.
+
+
+### Omnify MP4 stream relay (v8.7)
+
+MP4 URLs shaped as `https://<allowed-host>/proxy/stream/<opaque-token>` are played through the same-origin `/api/stream/<token>` route. The route validates the configured host and rights flag, forwards `Range` / `If-Range`, and preserves upstream status and media headers (including `206 Partial Content`). It does not accept arbitrary URLs and does not bypass DRM or provider access controls. HLS sources remain on the HLS.js/native HLS path.
